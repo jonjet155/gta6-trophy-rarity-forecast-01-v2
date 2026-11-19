@@ -28,6 +28,7 @@ MIN_READS_TREND = 4
 SHRINK_RMSE_SCALE = 2.0
 SHRINK_READS_SCALE = 0.1
 SPREAD_SCALE = 1.8
+DILUTION_SPREAD_SCALE = 0.85
 
 def clamp(x: float) -> float:
     return min(99.99, max(0.01, x))
@@ -134,7 +135,7 @@ def forecast_case(case: dict, name: str) -> dict:
             diluted_rate = last_rate * dilution
             lg = logit(diluted_rate)
             dt = max(0.0, target_hours - last_hours) / 24.0
-            spread = math.sqrt(base_spread * base_spread + max(0.0, dt) * 0.25) * SPREAD_SCALE
+            spread = math.sqrt(base_spread * base_spread + max(0.0, dt) * 0.25) * DILUTION_SPREAD_SCALE
             rows.append({"id": trophy["id"], "q": [round4(inv_logit(lg + z * spread)) for z in Z]})
             continue
 
