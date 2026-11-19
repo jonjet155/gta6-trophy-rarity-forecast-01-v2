@@ -29,6 +29,10 @@ SHRINK_RMSE_SCALE = 2.0
 SHRINK_READS_SCALE = 0.1
 SPREAD_SCALE = 1.8
 DILUTION_SPREAD_SCALE = 0.85
+DILUTION_A = 0.03
+DILUTION_B = 0.20
+DILUTION_MIN = 0.15
+DILUTION_MAX = 0.60
 
 def clamp(x: float) -> float:
     return min(99.99, max(0.01, x))
@@ -131,7 +135,11 @@ def forecast_case(case: dict, name: str) -> dict:
         n_reads = len(case["history"])
 
         if n_reads < MIN_READS_TREND or last_hours < 4.0 or target_hours <= last_hours:
-            dilution = TIER_DILUTION.get(tier, 0.20)
+            dilution = DILUTION_A + DILUTION_B * last_rate
+            if dilution < DILUTION_MIN:
+                dilution = DILUTION_MIN
+            if dilution > DILUTION_MAX:
+                dilution = DILUTION_MAX
             diluted_rate = last_rate * dilution
             lg = logit(diluted_rate)
             dt = max(0.0, target_hours - last_hours) / 24.0
