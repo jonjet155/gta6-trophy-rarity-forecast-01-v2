@@ -33,6 +33,7 @@ DILUTION_A = 0.03
 DILUTION_B = 0.20
 DILUTION_MIN = 0.15
 DILUTION_MAX = 0.60
+FLOOR_SPREAD = 0.3
 
 def clamp(x: float) -> float:
     return min(99.99, max(0.01, x))
@@ -127,7 +128,7 @@ def forecast_case(case: dict, name: str) -> dict:
 
         if last_rate <= 0.5:
             lg = logit(last_rate)
-            spread = 1.0 * SPREAD_SCALE
+            spread = FLOOR_SPREAD * SPREAD_SCALE
             rows.append({"id": trophy["id"], "q": [round4(inv_logit(lg + z * spread)) for z in Z]})
             continue
 
