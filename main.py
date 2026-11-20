@@ -34,6 +34,7 @@ DILUTION_B = 0.20
 DILUTION_MIN = 0.15
 DILUTION_MAX = 0.60
 FLOOR_SPREAD = 0.3
+FIT_SPREAD_SCALE = 0.7
 
 def clamp(x: float) -> float:
     return min(99.99, max(0.01, x))
@@ -178,7 +179,7 @@ def forecast_case(case: dict, name: str) -> dict:
 
         fit_spread = rmse * 1.2
         dilution_uncertainty = 0.15 if target_hours > last_hours + 24 else 0.0
-        spread = math.sqrt(base_spread * base_spread + fit_spread * fit_spread + dilution_uncertainty * dilution_uncertainty) * SPREAD_SCALE
+        spread = math.sqrt(base_spread * base_spread + fit_spread * fit_spread + dilution_uncertainty * dilution_uncertainty) * FIT_SPREAD_SCALE
 
         q = [round4(inv_logit(lg_pred + z * spread)) for z in Z]
         q = [max(0.0, min(100.0, v)) for v in q]
