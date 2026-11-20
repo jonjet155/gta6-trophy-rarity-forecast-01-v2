@@ -157,6 +157,8 @@ def forecast_case(case: dict, name: str) -> dict:
             h = hours_since_launch(read["at"])
             if h <= 0:
                 continue
+            if h < last_hours - 24.0:
+                continue
             xs.append(math.log(1 + h))
             ys.append(logit(r))
 
